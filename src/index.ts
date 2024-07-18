@@ -3,37 +3,34 @@ import { Command } from "./command";
 import { PriceCommand } from "./command/price";
 import { ApiUtil } from "./util/api";
 
-// const name = readlineSync.question("What is your name? ");
-// console.log(`Hello, ${name}!`);
-
 class BdoTerminalApp {
   private commands: Command[];
-  private apiUtil;
+  private apiUtil: ApiUtil;
 
   constructor() {
     this.apiUtil = new ApiUtil();
     this.commands = [new PriceCommand(this.apiUtil)];
   }
 
-  start() {
-    this.commands[0].execute([]);
+  async start() {
+    let commandInput: string;
+    let command: Command | undefined;
+
+    while (true) {
+      console.log();
+      commandInput = readlineSync.question("Enter the command: ");
+      command = this.commands.find(
+        (cmd) => cmd.name.toLowerCase() === commandInput.toLowerCase(),
+      );
+
+      if (command) {
+        await command.execute([]);
+      } else {
+        console.log(`Command "${commandInput}" not found. Please try again.`);
+      }
+    }
   }
 }
 
 const app = new BdoTerminalApp();
 app.start();
-
-// // 사용자로부터 아이템 이름 입력받기
-// const itemName = readlineSync.question("Enter the item name: ");
-
-// // 아이템 이름으로 ID 찾기
-// const item = itemData.find(
-//   (item: { name: string }) =>
-//     item.name.toLowerCase() === itemName.toLowerCase(),
-// );
-
-// if (item) {
-//   console.log(`The ID of the item "${itemName}" is ${item.id}`);
-// } else {
-//   console.log(`Item "${itemName}" not found.`);
-// }
