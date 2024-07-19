@@ -1,15 +1,13 @@
 import * as readlineSync from "readline-sync";
 import { Command } from "./command";
-import { PriceCommand } from "./command/price";
-import { ApiUtil } from "./util/api";
+import { PriceCommand } from "./command/Price";
+import { PriceAlertCommand } from "./command/PriceAlert";
 
 class BdoTerminalApp {
   private commands: Command[];
-  private apiUtil: ApiUtil;
 
   constructor() {
-    this.apiUtil = new ApiUtil();
-    this.commands = [new PriceCommand(this.apiUtil)];
+    this.commands = [new PriceCommand(), new PriceAlertCommand()];
   }
 
   async start() {
@@ -19,6 +17,7 @@ class BdoTerminalApp {
     while (true) {
       console.log();
       commandInput = readlineSync.question("Enter the command: ");
+      // command 찾기
       command = this.commands.find(
         (cmd) => cmd.name.toLowerCase() === commandInput.toLowerCase(),
       );
