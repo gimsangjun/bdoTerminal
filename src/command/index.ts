@@ -5,5 +5,8 @@ export interface Command {
 }
 
 export { PriceCommand } from "./Price";
-export { PriceAlertCommand } from "./PriceAlert";
 export { ListCommand } from "./List";
+export { CreateCommand } from "./Create";
+export { ReadCommand } from "./Read";
+export { UpdateCommand } from "./Update";
+export { DeleteCommand } from "./Delete";

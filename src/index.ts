@@ -1,13 +1,27 @@
 import * as readlineSync from "readline-sync";
-import { Command } from "./command";
-import { PriceCommand } from "./command/Price";
-import { PriceAlertCommand } from "./command/PriceAlert";
+import {
+  Command,
+  PriceCommand,
+  ListCommand,
+  CreateCommand,
+  ReadCommand,
+  UpdateCommand,
+  DeleteCommand,
+} from "./command";
 
 class BdoTerminalApp {
   private commands: Command[];
 
   constructor() {
-    this.commands = [new PriceCommand(), new PriceAlertCommand()];
+    this.commands = [
+      new PriceCommand(),
+      new CreateCommand(),
+      new ReadCommand(),
+      new UpdateCommand(),
+      new DeleteCommand(),
+    ];
+    const listCommand = new ListCommand(this.commands);
+    this.commands.push(listCommand);
   }
 
   async start() {

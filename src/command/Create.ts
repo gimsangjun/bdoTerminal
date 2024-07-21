@@ -5,9 +5,9 @@ import * as path from "path";
 import { exitUtil, ExitException } from "../utils/exit";
 import { findItemId } from "../utils/api";
 
-export class PriceAlertCommand implements Command {
-  name = "pricealert";
-  description = "Set a price alert for an item";
+export class CreateCommand implements Command {
+  name = "create";
+  description = "create a price alert for an item";
 
   execute = async (): Promise<void> => {
     let itemName: string;
