@@ -12,15 +12,15 @@ export class CreateCommand implements Command {
   execute = async (): Promise<void> => {
     let itemName: string;
     let targetPrice: number;
+    let itemId: number;
 
-    // TOOD: 여기 패턴은 다른데서도 쓰일듯.
     try {
       while (true) {
         // 사용자로부터 아이템 이름 입력받음
         itemName = exitUtil("Enter the item name (or type 'exit' to quit): ");
         try {
           // itemName이 없으면 예외 발생
-          findItemId(itemName);
+          itemId = findItemId(itemName);
           break;
         } catch (error) {
           console.log("Item not found. Please enter a valid item name.");
@@ -49,7 +49,7 @@ export class CreateCommand implements Command {
     }
 
     // 모델 PriceAlert에 데이터 넣기
-    const priceAlert = new PriceAlert(itemName, targetPrice);
+    const priceAlert = new PriceAlert(itemId, itemName, targetPrice);
 
     // ../datas 폴더에 데이터를 저장
     const dataDir = path.join(__dirname, "../datas");

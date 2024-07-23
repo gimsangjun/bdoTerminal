@@ -26,6 +26,15 @@ export class UpdateCommand implements Command {
 
     try {
       while (true) {
+        // 현재 priceAlert 리스트를 보여줌
+        console.log("Current Price Alerts:");
+        alerts.forEach((alert, index) => {
+          console.log(
+            `${index + 1}. Item: ${alert.itemName}, Target Price: ${
+              alert.targetPrice
+            }`,
+          );
+        });
         itemName = exitUtil(
           "Enter the item name to update (or type 'exit' to quit): ",
         );
@@ -57,6 +66,7 @@ export class UpdateCommand implements Command {
     const alert = alerts.find(
       (alert) => alert.itemName.toLowerCase() === itemName.toLowerCase(),
     );
+
     if (alert) {
       alert.targetPrice = targetPrice;
 
