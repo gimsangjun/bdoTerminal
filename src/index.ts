@@ -7,6 +7,7 @@ import {
   ReadCommand,
   UpdateCommand,
   DeleteCommand,
+  ShowCommand,
 } from "./command";
 
 class BdoTerminalApp {
@@ -19,6 +20,7 @@ class BdoTerminalApp {
       new ReadCommand(),
       new UpdateCommand(),
       new DeleteCommand(),
+      new ShowCommand(),
     ];
     const listCommand = new ListCommand(this.commands);
     this.commands.push(listCommand);
