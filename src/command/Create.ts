@@ -2,8 +2,15 @@ import { Command } from ".";
 import { PriceAlert } from "../models/PriceAlert";
 import * as fs from "fs";
 import * as path from "path";
+import readlineSync from "readline-sync";
 import { exitUtil, ExitException } from "../utils/exit";
-import { findItemId } from "../utils/api";
+import {
+  Item,
+  findItemId,
+  getPrice,
+  transformAndPrintItems,
+} from "../utils/api";
+import { parseKoreanCurrency } from "../utils/paseKorPrice";
 
 export class CreateCommand implements Command {
   name = "create";
@@ -13,6 +20,7 @@ export class CreateCommand implements Command {
     let itemName: string;
     let targetPrice: number;
     let itemId: number;
+    let selectedItem: Item;
 
     try {
       while (true) {
@@ -21,6 +29,21 @@ export class CreateCommand implements Command {
         try {
           // itemName이 없으면 예외 발생
           itemId = findItemId(itemName);
+
+          // 사용자가 입력한 아이템 가격을 보여줌. 만약 response.data가 list라면 그 중에 하나만 사용자가 선택함.
+          const res = await getPrice(itemName);
+          if (Array.isArray(res)) {
+            transformAndPrintItems(res);
+            const selectedIndex = readlineSync.questionInt(
+              "Select an item by number: ",
+            );
+            selectedItem = res[selectedIndex - 1];
+          } else {
+            selectedItem = res;
+          }
+          console.log("현재 선택된 아이템");
+          transformAndPrintItems(selectedItem);
+
           break;
         } catch (error) {
           console.log("Item not found. Please enter a valid item name.");
@@ -31,7 +54,7 @@ export class CreateCommand implements Command {
         const targetPriceInput = exitUtil(
           "Enter the target price (or type 'exit' to quit): ",
         );
-        targetPrice = parseFloat(targetPriceInput);
+        targetPrice = parseKoreanCurrency(targetPriceInput);
 
         if (!isNaN(targetPrice)) {
           break;
@@ -49,7 +72,13 @@ export class CreateCommand implements Command {
     }
 
     // 모델 PriceAlert에 데이터 넣기
-    const priceAlert = new PriceAlert(itemId, itemName, targetPrice);
+    const priceAlert = new PriceAlert(
+      itemId,
+      selectedItem.sid,
+      itemName,
+      targetPrice,
+      true,
+    );
 
     // ../datas 폴더에 데이터를 저장
     const dataDir = path.join(__dirname, "../datas");

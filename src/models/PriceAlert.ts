@@ -1,16 +1,19 @@
 export class PriceAlert {
   id: number;
+  sid: number;
   itemName: string;
   targetPrice: number;
   isActive: boolean;
 
   constructor(
     id: number,
+    sid: number,
     itemName: string,
     targetPrice: number,
     isActive: boolean = true,
   ) {
     this.id = id;
+    this.sid = sid;
     this.itemName = itemName;
     this.targetPrice = targetPrice;
     this.isActive = isActive;
