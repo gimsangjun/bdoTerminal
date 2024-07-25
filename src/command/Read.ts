@@ -25,7 +25,7 @@ export class ReadCommand implements Command {
       console.log("Price alerts:");
       alerts.forEach((alert) => {
         console.log(
-          `- Item: ${alert.itemName}, Target Price: ${alert.targetPrice}`,
+          `- Item: ${alert.itemName}, sid: ${alert.sid}, Target Price: ${alert.targetPrice}`,
         );
       });
     }

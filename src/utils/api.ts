@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import * as fs from "fs";
 import axios from "axios";
+import readlineSync from "readline-sync";
 
 dotenv.config();
 
@@ -23,12 +24,11 @@ function findItemId(itemName: string): number {
   return item.id;
 }
 
-// 아이템 가격 가져오기
-async function getPrice(itemName: string): Promise<number> {
+// 아이템 가격 가져오기 api 요청 리턴.
+async function getPrice(itemName: string): Promise<any> {
   try {
     const itemId = findItemId(itemName);
     const requestBody = [itemId];
-
     // 아이템 가격 요청
     const response = await axios.post(
       `${BdoMarketUrl}/item?lang=kr`,
@@ -39,13 +39,7 @@ async function getPrice(itemName: string): Promise<number> {
         },
       },
     );
-
-    const price = Math.max(
-      response.data.basePrice,
-      response.data.lastSoldPrice,
-    );
-
-    return price;
+    return response.data;
   } catch (error) {
     console.error(`Failed to fetch price for item "${itemName}":`, error);
     throw error;
@@ -85,6 +79,40 @@ async function getPricesByIds(itemIds: number[]): Promise<number[]> {
   } catch (error) {
     console.error(`Failed to fetch prices for item IDs "${itemIds}":`, error);
     throw error;
+  }
+}
+
+export interface Item {
+  id: number;
+  sid: number;
+  basePrice: number;
+  lastSoldPrice: number;
+}
+
+// TODO: 따로 정리, return을 or로 할수 있음.
+export function transformAndPrintItems(items: Item | Item[]): void {
+  if (!Array.isArray(items)) {
+    items = [items];
+  }
+
+  items.forEach((item, index) => {
+    const maxPrice = Math.max(item.basePrice, item.lastSoldPrice);
+    const formattedPrice = formatKoreanCurrency(maxPrice);
+    console.log(
+      `${index + 1}: id=${item.id}, sid=${
+        item.sid
+      }, maxPrice=${formattedPrice}`,
+    );
+  });
+}
+
+function formatKoreanCurrency(value: number): string {
+  if (value >= 100000000) {
+    return (value / 100000000).toFixed(2) + "억 원";
+  } else if (value >= 10000) {
+    return (value / 10000).toFixed(2) + "만 원";
+  } else {
+    return value.toLocaleString() + "원";
   }
 }
 

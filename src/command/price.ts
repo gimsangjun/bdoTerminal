@@ -1,6 +1,6 @@
 import { Command } from ".";
 import * as readlineSync from "readline-sync"; // 이것도, 객체화 시켜야할지도?
-import { getPrice } from "../utils/api";
+import { getPrice, transformAndPrintItems } from "../utils/api";
 
 export class PriceCommand implements Command {
   name = "price";
@@ -13,8 +13,9 @@ export class PriceCommand implements Command {
     while (true) {
       try {
         itemName = readlineSync.question("Enter the item name: ");
-        const price = await getPrice(itemName);
-        console.log(`"${itemName}"의 가격은 ${price}입니다.`);
+        const res = await getPrice(itemName);
+        transformAndPrintItems(res);
+
         break;
       } catch (error) {
         console.error("Error:", error.message);
