@@ -30,8 +30,18 @@ export class ShowCommand implements Command {
       const prices = await getPricesByIds(itemIds);
       alerts.forEach((alert, index) => {
         const currentPrice = prices[index];
-        // currentPrice가 targetPrice보다 작을 경우에만 특정 가격에 도달했다고 알림
-        if (currentPrice <= alert.targetPrice) {
+        // alertCondition에 따라 동작하게 수정
+        if (
+          alert.alertCondition === "above" &&
+          currentPrice >= alert.targetPrice
+        ) {
+          console.log(
+            `Item: ${alert.itemName}, Target Price: ${alert.targetPrice}, Current Price: ${currentPrice} - Target price reached or above!`,
+          );
+        } else if (
+          alert.alertCondition === "below" &&
+          currentPrice <= alert.targetPrice
+        ) {
           console.log(
             `Item: ${alert.itemName}, Target Price: ${alert.targetPrice}, Current Price: ${currentPrice} - Target price reached or below!`,
           );

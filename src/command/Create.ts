@@ -10,7 +10,7 @@ import {
   getPrice,
   transformAndPrintItems,
 } from "../utils/api";
-import { parseKoreanCurrency } from "../utils/paseKorPrice";
+import { parseKoreanCurrency } from "../utils/parseKorPrice";
 
 export class CreateCommand implements Command {
   name = "create";
@@ -21,6 +21,7 @@ export class CreateCommand implements Command {
     let targetPrice: number;
     let itemId: number;
     let selectedItem: Item;
+    let alertCondition: "above" | "below";
 
     try {
       while (true) {
@@ -42,7 +43,7 @@ export class CreateCommand implements Command {
             selectedItem = res;
           }
           console.log("현재 선택된 아이템");
-          transformAndPrintItems(selectedItem);
+          transformAndPrintItems([selectedItem]);
 
           break;
         } catch (error) {
@@ -62,6 +63,18 @@ export class CreateCommand implements Command {
           console.log("Invalid price. Please provide a valid number.");
         }
       }
+
+      while (true) {
+        const conditionInput = exitUtil(
+          "Enter the alert condition ('above' for price above target, 'below' for price below target): ",
+        ).toLowerCase();
+        if (conditionInput === "above" || conditionInput === "below") {
+          alertCondition = conditionInput as "above" | "below"; // TODO: 이런식으로 입력값을 조절할수 잇다.
+          break;
+        } else {
+          console.log("Invalid condition. Please enter 'above' or 'below'.");
+        }
+      }
     } catch (error) {
       // 밖으로 나가기
       if (error instanceof ExitException) {
@@ -77,6 +90,7 @@ export class CreateCommand implements Command {
       selectedItem.sid,
       itemName,
       targetPrice,
+      alertCondition,
       true,
     );
 
