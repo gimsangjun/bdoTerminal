@@ -8,6 +8,9 @@ import {
   UpdateCommand,
   DeleteCommand,
   ShowCommand,
+  DriveFilesCommand,
+  UploadFileCommand,
+  UpdateFileCommand,
 } from "./command";
 
 class BdoTerminalApp {
@@ -21,6 +24,10 @@ class BdoTerminalApp {
       new UpdateCommand(),
       new DeleteCommand(),
       new ShowCommand(),
+      // Google Drive
+      new DriveFilesCommand(),
+      new UploadFileCommand(),
+      new UpdateFileCommand(),
     ];
     const listCommand = new ListCommand(this.commands);
     this.commands.push(listCommand);
