@@ -10,7 +10,8 @@ dotenv.config();
 
 export class UpdateFileCommand implements Command {
   name = "updateFile";
-  description = "Update a file in a Google Drive folder";
+  description =
+    "Download a data file from a Google Drive folder and update the local file.";
 
   constructor() {}
 
@@ -54,6 +55,7 @@ export class UpdateFileCommand implements Command {
 }
 
 // Google Drive에 파일 업데이트
+// TODO: fs, pasth 모듈 사용법 노션
 async function updateFileFromDrive(oAuth2Client: any) {
   const drive = google.drive({
     version: "v3",
@@ -68,6 +70,7 @@ async function updateFileFromDrive(oAuth2Client: any) {
   try {
     // Google Drive에서 priceAlerts.json 파일의 fileId 가져오기
     const listResponse = await drive.files.list({
+      // TODO: 아래와 같은 정보들은 어디서 확인하는지 검색해보기
       q: `name='priceAlerts.json' and '${folderId}' in parents`,
       fields: "files(id, name, modifiedTime)",
       spaces: "drive",
@@ -93,6 +96,7 @@ async function updateFileFromDrive(oAuth2Client: any) {
     }
 
     // Google Drive에서 파일 다운로드 및 로컬 파일 덮어쓰기
+    // TODO: 어떤 구조로 쓰여진 코드인지 확인
     const dest = fs.createWriteStream(localFilePath);
     await drive.files
       .get({ fileId: fileId, alt: "media" }, { responseType: "stream" })
